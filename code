@@ -1,0 +1,107 @@
+int ENA = 13;
+int IN1 = 7;
+int IN2 = 4;
+/* jyotishmita kakati */
+int ENB = 12;
+int IN3 = 3;
+int IN4 = 5;
+
+int speed_left = 270;
+int speed_right = 270;
+
+const int pingPin = 8;
+
+void right();
+void forward();
+void backward();
+void stop();
+
+void setup() {
+    Serial.begin(9600);
+	
+	pinMode(ENA, OUTPUT);
+	pinMode(ENB, OUTPUT);
+	pinMode(IN1, OUTPUT);
+	pinMode(IN2, OUTPUT);
+	pinMode(IN3, OUTPUT);
+	pinMode(IN4, OUTPUT);
+	
+	
+	digitalWrite(IN1, LOW);
+	digitalWrite(IN2, LOW);
+	digitalWrite(IN3, LOW);
+	digitalWrite(IN4, LOW);
+}
+
+void loop() {
+	
+  	long duration, inches;
+
+	pinMode(pingPin, OUTPUT);
+	digitalWrite(pingPin, LOW);
+	delayMicroseconds(2);
+	digitalWrite(pingPin, HIGH);
+	delayMicroseconds(5);
+	digitalWrite(pingPin, LOW);
+
+	pinMode(pingPin, INPUT);
+	duration = pulseIn(pingPin, HIGH);
+
+	inches = microsecondsToInches(duration);
+
+	Serial.print(inches);
+	Serial.println("inches");
+	delay(100);
+  	/*Obstacle avoidance conditions and operations*/
+  	if(inches<30){
+    	stop();
+      	delay(1500);
+      	backward();
+      	delay(2000);
+      	right();
+      	delay(1500);
+  }
+  else{
+    forward();
+  }
+}
+
+long microsecondsToInches(long microseconds) {
+  return microseconds / 74 / 2;
+}
+
+void forward(){
+  analogWrite(ENA,speed_left);
+  digitalWrite(IN1,HIGH);
+  digitalWrite(IN2,LOW);
+  digitalWrite(IN3,HIGH);
+  digitalWrite(IN4,LOW);
+  analogWrite(ENB,speed_right);
+  };
+
+void backward(){
+  analogWrite(ENA,speed_left);
+  digitalWrite(IN1,LOW);
+  digitalWrite(IN2,HIGH);
+  digitalWrite(IN3,LOW);
+  digitalWrite(IN4,HIGH);
+  analogWrite(ENB,speed_right);
+  };
+
+void right(){
+  analogWrite(ENA,speed_left);
+  digitalWrite(IN1,HIGH);
+  digitalWrite(IN2,LOW);
+  digitalWrite(IN3,LOW);
+  digitalWrite(IN4,HIGH);
+  analogWrite(ENB,speed_right);
+  };
+
+void stop(){
+  analogWrite(ENA,0);
+  digitalWrite(IN1,LOW);
+  digitalWrite(IN2,LOW);
+  digitalWrite(IN3,LOW);
+  digitalWrite(IN4,LOW);
+  analogWrite(ENB,0);
+    };
